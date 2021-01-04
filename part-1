@@ -1,0 +1,222 @@
+1. Copy vs Readonly 
+
+Copy
+It creates new copy of an object, and once new object is created retain count will be 1
+Use copy when you need the value of an object as it is, and you don’t want other object to update the value of your object
+Creates setters and getters 
+
+Readonly
+Indicates that the property is readonly
+Only generates getter, no setters will be generated 
+If you try to change value, you will get compiler error
+
+
+
+2. Copy vs Strong 
+
+Copy
+It creates new copy of an object, and once new object is created retain count will be 1
+Use copy when you need the value of an object as it is, and you don’t want other object to update the value of your object
+Creates setters and getters 
+
+strong
+Increases the retain count by 1
+Creates setters and getters 
+Object will be mutable 
+
+
+
+3. Weak vs Strong 
+
+weak
+Does not increase the retain count 
+Don’t protect the object from being deallocated by arc
+On deallocation, weak objects will be set to nil, and that’s why all weak references are optional
+Creates setters and getters 
+
+strong
+Increases the retain count by 1
+protects the object from being deallocated by arc
+Creates setters and getters 
+Object will be mutable 
+
+
+
+4. Weak vs Unowned  
+
+weak
+Does not increase the retain count 
+On deallocation, weak objects will be set to nil, and that’s why all weak references are optional
+Creates setters and getters 
+
+unowned
+Does not increase the retain count 
+On deallocation, unowned objects will not be set to nil, and that’s why unowned references don’t have to be optional
+Creates setters and getters 
+NOTE : It’s important that you only use unowned references when you really know that the object will never be nil once it has been set.
+
+
+
+
+5. Gist of – All the Attributes
+
+Strong – adds reference to keep the object alive 
+Weak – doesn’t add reference so object can become nil by arc
+Assign – normal assign, no reference, used mostly for primitive data types 
+Copy – makes new copy of an object, the copy will be immutable 
+Nonatomic – makes not thread safe objects, increases performance 
+Readwrite – creates the getter & setters 
+Readonly – creates only getters
+
+
+
+
+6. ARC – Automatic reference counting & Retain Cycle 
+
+ARC is apples way of handling memory management for us. What it does is, for each object it keeps a count of how many strong references are pointing to that object. And as long as there is a strong reference for an object, the object will stay in memory.
+For example lets say I have a person class, there is also a camera class phone class and a MacBook class, now these class can have a strong references pointing back to person class, so ARC is going to say that the count is 4, so even if I try to make person class equal to nil to try to get rid of person class from memory, ARC ref count won’t allow it, person class won’t be released from memory because there others three objects pointing back to it, this issue is called retain cycle.
+so how do we fix that, we need to make those strong ref to weak ref
+
+
+
+
+7. Optional in swift
+
+optional allows you to write flexible and more safe code
+Question mark means, it can be nil or some value.
+
+
+
+
+8. What is ??(double question mark in swift).
+
+To provide default value for a variable  which can be nil
+It says hey if its nothing there then use this value
+it is similar to saying “!=nil”
+First it checks if return value is nil, if it indeed is nil then it present the default value
+
+Syntax – 
+Without ??
+A != nil ? A! : b
+
+With ??
+A ?? b
+
+
+
+
+9. Optional chaining
+
+Optional chaining is the way by which we try to retrieve a values from a chain of optional values. 
+Optional chaining allows you to fail gracefully when u try to access a property of an object which is nil 
+
+Example – 
+let album = albumReleased(year: 2006)?.uppercased()
+
+Option chaining can be as long as required 
+
+let album = albumReleased(year: 2006)?.someOptionalValue?.someOtherOptionalValue?.whatever
+
+Note that there’s a question mark in there, which is the optional chaining: everything after the question mark will only be run if everything before the question mark has a value.
+
+
+
+
+
+10. Optional Binding
+
+Other than forced unwrapping, optional binding is a simpler and recommended way to unwrap an optional. You use optional binding to check if theoptional contains a value or not. If it does contain a value, unwrap it and put it into a temporary constant or variable.
+With optional binding, you are creating a new reference to whatever you just unwrapped, and generally, that’s a strong reference.
+
+if let constantName = someOptional { 
+		statements 
+}
+
+
+
+
+
+11. Delegate Vs Notification
+
+Delegates : used in one to one communication
+Notification : used in one to many communication 
+
+
+
+
+
+12. class Vs struct
+
+Class – reference type, means any changes in one ref, will effect other ref as well
+Struct – value type – means changes in one value will not effect the others
+
+
+
+
+
+13. enum
+
+Enum – group of related values
+
+Syntax – 
+enum DoorUsed
+{
+  case FrontDoor, BackDoor, SideDoor, GarageDoor
+}
+
+Raw = values defined in enum
+enum Direction: Int {
+    case Up = 1
+    case Down  // raw value 2
+    case Left  // raw value 3
+    case Right // raw value 4
+}
+
+Associated = passed as param to a enum
+enum ExampleAssociation {
+    case Name(String)
+    case Nums(Int, Int, Int)
+}
+
+Note : Raw and Associated can not be used together because, u can’t get associated value if its defined with raw
+
+
+
+
+
+
+14. guard
+
+Guard provides early exit, and doesn’t allow any code if condition is not true
+
+syntax -
+guard let name = nameField.text else { 
+     print("No name to submit")
+     return 
+}
+
+
+
+
+
+
+15. defer
+
+defer statement is used to execute a piece of code exactly before the execution departs the recent scope. 
+The defer statement is executed after the return!
+the defer statement is executed no matter how you exit 
+
+syntax -
+ func deferEx() {
+     print("Beginning") 
+     var value: String? 
+	defer { 
+	   if let v = value { 
+	   print("Ending execution of (v)") 
+	   } 
+	}
+     value = "defer function" 
+     print("Ending")
+ }
+Thanks for reading! Good luck for your interview. Please do read/watch other part of this interview questions. Happy Coding!!
+
