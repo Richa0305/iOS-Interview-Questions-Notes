@@ -1,0 +1,103 @@
+1. What is MVVM?
+
+In mvc – view send events to the controller , the controller then send request to model for data and perform business logic if required, model notifies controller in case of any data change and controller send data to view to present
+MVC was resulted into massive view controller which were difficult to manage 
+In mvvm, view controller and view is combined to become “view” 
+And one more layer is added called “viewmodel”, this new layer will communicate with model and process the data and perform some business logic if required and sends final data to viewcontroller that is only required to update the ui.
+
+Example – 
+For a student entry form – 
+Studentviewcontroller – will act as view to display final result on screen
+Studentviewmodel  class – will act as viewmodel to perform heavy tasks and business logic
+Studentmodel – will be model which will represent the database model for student class
+
+
+
+
+
+2. What is Dynamic dispatch?
+
+Dynamic dispatch is the process of selecting which implementation of a polymorphic operation (method or function) to call at run time. Dynamic dispatch means that the Objective-C runtime decides at runtime which implementation of a particular method or function it needs to invoke. 
+For example, if a subclass overrides a method of its superclass, dynamic dispatch figures out which implementation of the method needs to be invoked, that of the subclass or that of the parent class.
+
+Swift uses the Swift runtime whenever possible. The result is that it can make a number of optimizations. While Objective-C solely relies on dynamic dispatch, Swift only opts for dynamic dispatch if it has no other choice. If the compiler can figure out at compile time which implementation of a method it needs to choose, it wins a few nanoseconds by opting out of dynamic dispatch.
+By applying the ”dynamic” declaration modifier to a member of a class, you tell the compiler that dynamic dispatch should be used to access that member. 
+
+“dynamic” declaration modifier can only be used for members of a class. Structures and enumerations don’t support inheritance, which means the runtime doesn’t have to figure out which implementation it needs to use.
+Piror to Swift 4, a function with ”dynamic” modifier is implicitly visible to Objective-C. Meanwhile Swift 4 requires you to explicitly declare it with ”@objc” attribute.
+Swift provides 2 ways to achieve dynamism: table dispatch and message dispatch.
+
+table dispatch : With this method, a class is associated with a so-called virtual table which comprises an array of function pointers to the real implementation corresponding to that class. Note that the vtable is constructed at compile time. Thus, there are only two additional instructions (read and jump) as compared to static dispatch. So the dispatch should be theoretically pretty fast.
+message dispatch : it is Objective-C that provides this mechanism. Every time an Objective-C method is called, the invocation is passed to ”objc_msgSend” which handles the look ups. Unlike table dispatch, the message passing dictionary could be modified at runtime, enabling us to adjust the program behaviours while running. 
+
+
+
+
+
+3. Difference between Dynamic dispatch vs static dispatch?
+
+When something is dynamically dispatched, this means the compiler does not know which method is being called at runtime and has to figure it out. The reason for this is because Swift allows you to override the methods or properties of a superclass in one of its subclasses. Therefore, the compiler needs to determine are you referring to the superclasses’ implementation or are you referring to the implementation of the subclass? This can increase the overhead of your application.
+
+When something is statically dispatched, we are dealing with the opposite scenario. With static dispatch, the compiler does in fact know which property or method is being called at runtime, which is a performance boost. You can achieve static dispatch by marking a base class with the “final” keyword. This lets the compiler know that this class can not have any subclasses and that the method/property you are referring to is its only implementation.
+
+Another example is the “static” keyword for when defining type methods or properties. This keyword is really just short for “final class”. This lets the compiler know that this is the final implementation of this method and it will not be overridden. Therefore, it will be statically dispatched.
+
+When defining a type method you can mark it with “class” or “static”, but which you choose determine how it will be dispatched.
+
+
+
+
+
+
+
+4. Difference between @escaping and @nonescaping?
+
+If a closure is passed as an argument to a function and it is invoked after the function returns, the closure is escaping. 
+
+In Swift 1 and Swift 2, closure parameters was escaping by default. Your closure wouldn’t escape the function’s body, if no you could mark the closure parameters as @nonescaping.
+
+In Swift 3, they made a change: closure parameters are nonescaping by default, if you wanna to escape the closure execution, you have to use @escaping with the closure parameters. 
+
+There are many different benefits of making non-escaping as by default. The most important benefits are performance and code optimisation by the compiler, because if the compiler knows that the closure is non-escaping, it will take care about the memory allocation for the closure.
+
+
+
+
+
+
+
+5. WHAT IS “lazy”?
+
+A lazy stored property is a property whose initial value is not calculated until the first time it is used. You indicate a lazy stored property by writing the ”lazy” modifier before its declaration.
+
+If the your app is a complex one, then the memory issues are one of the major challenges. So, the developer should be really writing an optimised code which consider memory allocation at first place.  The developer need to avoid doing expensive work unless it’s really needed. We can achieve that by using lazy.
+
+You can’t use lazy with let .
+
+You can’t use it with computed properties . Because, a computed property returns the value every time we try to access it after executing the code inside the computation block.
+
+You can use lazy only with members of struct and class .
+
+Lazy variables are not initialised automatically and so is not thread safe.
+
+
+
+
+
+
+
+6. Difference between [unowned self] & [week self]?
+
+The only time where you really want to use [unowned self] or [weak self] is when you would create a strong reference cycle. A strong reference cycle is when there is a loop of ownership where objects end up owning each other (maybe through a third party) and therefore they will never be deallocated because they are both ensuring that each other stick around.
+
+In case of a closure, you just need to realize that any variable that is referenced inside of it, gets “owned” by the closure. As long as the closure is around, those objects are guaranteed to be around. The only way to stop that ownership, is to use the [unowned self] or [weak self]. So if a class owns a closure, and that closure captures a strong reference to that class, then you have a strong reference cycle between the closure and the class. This also includes if the class owns something that owns the closure.
+
+If self could be nil in the closure use [weak self].
+
+If self will never be nil in the closure use [unowned self].
+
+
+
+
+
+
