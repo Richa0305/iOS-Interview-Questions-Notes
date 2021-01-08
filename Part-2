@@ -101,3 +101,112 @@ If self will never be nil in the closure use [unowned self].
 
 
 
+7. Difference between Process & Threads?
+
+a process can contain multiple threads of execution, and each thread can perform multiple tasks one at a time.
+
+Task: a simple, single piece of work that needs to be done.
+
+Thread: a mechanism provided by the operating system that allows multiple sets of instructions to operate at the same time within a single application.
+
+Process: an executable chunk of code, which can be made up of multiple threads.
+
+
+
+
+
+
+
+8. Difference between Operation & GCD?
+
+Both are used to do any type of multithreading operation in ios
+
+GCD is a lightweight way to represent units of work that are going to be executed concurrently. You don’t schedule these units of work; the system takes care of scheduling for you. Adding dependency among blocks can be a headache. Canceling or suspending a block creates extra work for you as a developer!
+
+Operation adds a little extra overhead compared to GCD, but you can add dependency among various operations and re-use, cancel or suspend them.
+
+Operation and OperationQueue are built on top of GCD. As a very general rule, Apple recommends using the highest-level abstraction, then dropping down to lower levels when measurements show this is necessary.
+
+
+
+
+
+
+
+
+9. What is Operation?
+
+Operation is an abstract class, designed for sub-classing. Each subclass represents a specific task.
+
+main() is the method you override in Operation subclasses to actually perform work.
+
+
+class ImageDownloader : Operation{
+           let photoRecord: PhotoRecord
+		init(_ photoRecord: PhotoRecord) {
+    		self.photoRecord = photoRecord
+ 		 }
+		override func main(){
+			guard let imageData = try? Data(contentsOf: photoRecord.url) else { return }
+			if !imageData.isEmpty {
+      			photoRecord.image = UIImage(data:imageData)
+   		 }
+		}
+	}
+  
+  
+  
+  
+  
+  
+  
+  10. What is OperationQueue?
+
+A queue that regulates the execution of operations
+
+An operation queue executes its queued Operation objects based on their priority and readiness. After being added to an operation queue, an operation remains in its queue until it reports that it is finished with its task. 
+
+OperationQueue is particularly powerful because it lets you control precisely how many simultaneous operations can run and what quality of service you need, while also letting you schedule work using closures. You can even ask the operation queue to wait until all its operations are finished, which makes scheduling easier.
+
+let queue = OperationQueue() 
+	for image in images { 
+		queue.addOperation { 
+			self.process(image) 
+		}
+	 } 
+queue.waitUntilAllOperationsAreFinished()
+
+You can add as many operations as you want, but they don’t all get executed at the same time. Instead, OperationQueue limits the number of operations based on system conditions – if it’s a more powerful device that isn’t doing much right now, you’ll get more operations than a less powerful device or a device that’s busy with other work.
+
+You can override this behavior if you need something specific:
+
+queue.maxConcurrentOperationCount = 4
+
+
+
+
+
+11. What is GCD – Grand Central Dispatch ?
+
+Grand Central Dispatch or GCD is a low-level API for managing concurrent operations.
+
+DispatchQueue –
+Global Queue –Using to perform non-UI work in the background.
+
+Main Queue –Using to update the UI after completing work in a task on a concurrent queue.
+
+List of DispatchQueue Priority –
+.userInteractive
+.userInitiated
+.default
+.utility
+.background
+.unspecified
+
+
+DispatchQueue.global(qos: .background).async { 
+    // Call your background task               
+      DispatchQueue.main.async {                            
+        // UI Updates here for task complete.             
+        }
+}
